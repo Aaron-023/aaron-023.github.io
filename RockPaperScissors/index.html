@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Rock Paper Scissors</title>
+
+
+    <!-- STILL TO DO 
+    
+    change the digitizer message on cpu selection
+    change the digitizer message on user selection
+    add a scoreboard
+    reset button for the score board
+    
+    -->
+
+    <script>
+      let rock = 0;
+      let paper = 1;
+      let scissors = 2;
+      /* CPU selects rock, paper, scissors from Math.floor(Math.random() * 10) */
+      var rNG = Math.floor(Math.random() * 10);
+
+      var userSelection;
+      var cpuSelection;
+
+      // all comms to player
+      var Communications = {
+        clickToPlay: "Click me to SHOOT",
+        welcomeMessage: "Let\'s begin\.",
+        three: "3...",
+        two: "2..",
+        one: "1.",
+        shoot: "SHOOT!",
+        draw: "It's a DRAW! ",
+        win: "You WIN! ",
+        lose: "You LOSE! ",
+        cpuRock: "I picked Rock",
+        cpuPaper: "I picked Paper",
+        cpuScissors: "I Picked Scissors"
+      };
+
+      var didUserWin = function(userSelection, cpuSelection) {
+          // rock
+          if (userSelection == rock && cpuSelection == rock) { return Communications.draw }
+          if (userSelection == rock && cpuSelection == paper) { return Communications.lose + Communications.cpuPaper }
+          if (userSelection == rock && cpuSelection == scissors) { return Communications.win + Communications.cpuScissors }
+
+          //paper
+          if (userSelection == paper && cpuSelection == paper) { return Communications.draw }
+          if (userSelection == paper && cpuSelection == rock) { return Communications.win + Communications.cpuRock }
+          if (userSelection == paper && cpuSelection == scissors) { return Communications.lose + Communications.cpuScissors }
+
+          //scissors
+          if (userSelection == scissors && cpuSelection == scissors) { return Communications.draw }
+          if (userSelection == scissors && cpuSelection == rock) { return Communications.lose + Communications.cpuRock }
+          if (userSelection == scissors && cpuSelection == paper) { return Communications.win + Communications.cpuPaper }
+
+      }
+
+
+      // modify the display area/digitizer
+      var onDocumentLoad = document.addEventListener('DOMContentLoaded', (event) => { 
+      var digi = document.getElementById("welcomeWindow");
+        digi.innerHTML = Communications.clickToPlay;
+        
+      // time outs at the start of the game
+      function beginDialogue(){
+            setTimeout(() => {
+              digi.innerText = Communications.welcomeMessage;
+            }, 500);
+            setTimeout(() => {
+              digi.innerText = Communications.three;
+            }, 2000);
+            setTimeout(() => {
+              digi.innerText = Communications.two;
+            }, 3000);
+            setTimeout(() => {
+              digi.innerText = Communications.one;
+            }, 4000);
+            setTimeout(() => {
+            digi.innerText = Communications.shoot;
+          }, 5000);
+        }
+
+
+
+
+      // determine the winner of a round
+      function whoWon(userSelection, cpuSelection){
+        let result = didUserWin(userSelection, cpuSelection);
+        
+        digi.innerHTML = result;
+
+        setTimeout(() => {
+          digi.innerHTML = "Click me to play again!"
+        }, 2500);
+        // console.log(res);
+      }
+
+
+        
+      
+      // call this for cpu to return rock, paper or scissors
+      function cpuChosenMove(rNG){
+        if (rNG <= 2.33){
+          cpuSelection = 0;
+          // console.log(cpuSelection);
+        } 
+        else if (rNG >= 6.33) {
+          cpuSelection = 1
+          // console.log(cpuSelection);
+        }
+        else {
+          cpuSelection = 2;
+          // console.log(cpuSelection);
+        }
+      }
+
+      // assign value of user selected button
+      // Rock = 0 , Paper = 1, Scissors = 2
+      function contollerButtonClicked(action){
+        (action == 0) ? userSelection = 0 : null;
+        (action == 1) ? userSelection = 1 : null;
+        (action == 2) ? userSelection = 2 : null;
+        // console.log(userSelection);
+      }
+
+
+      //event listeners for all button clicks
+      var userClicks = document.addEventListener("click", event => {
+        (event.target.matches("#welcomeWindow")) ? beginDialogue() : null;
+        (event.target.matches("#welcomeWindow")) ? cpuChosenMove(rNG) : null;
+        (event.target.matches("#rock")) ? contollerButtonClicked(0) : null;
+        (event.target.matches("#paper")) ? contollerButtonClicked(1) : null;
+        (event.target.matches("#scissors")) ? contollerButtonClicked(2) : null;
+        (event.target.matches("#rock")) ? whoWon(userSelection, cpuSelection) : null;
+        (event.target.matches("#paper")) ? whoWon(userSelection, cpuSelection) : null;
+        (event.target.matches("#scissors")) ? whoWon(userSelection, cpuSelection) : null;
+
+      });
+
+
+
+
+     }); 
+// end of document load
+    </script>
+
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      h1 {
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      #welcomeWindow {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 500px;
+        width: 500px;
+        margin: 20px auto;
+        border-radius: 15px;
+        background-color: rgb(158, 157, 166);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 70px;
+        text-align: center;
+      }
+      #controllerButtons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .controlPadButton {
+        height: 4em;
+        width: 10em;
+        border-radius: 15px;
+        margin: 0px 10px;
+        box-shadow: 3px 3px 3px;
+        text-transform: uppercase;
+        font-size: 22px;
+        font-weight: bold;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Rock Paper Scissors</h1>
+
+    <div id="welcomeWindow"></div>
+
+    <div id="controllerButtons">
+      <!-- Rock -->
+      <label for="rock"></label>
+      <input id="rock" class="controlPadButton rock" type="button" value="Rock"/>
+
+      <!-- Paper -->
+      <label for="paper"></label>
+      <input id="paper" class="controlPadButton paper" type="button" value="Paper"/>
+
+      <!-- Scissors -->
+      <label for="scissors"></label>
+      <input id="scissors" class="controlPadButton scissors" type="button" value="Scissors"/>
+    </div>
+  </body>
+</html>
